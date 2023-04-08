@@ -19,13 +19,6 @@ func main() {
 	configContent := configReader.ReadFile()
 	config := goai.ParseConfig(configContent)
 
-	promptReader := &goai.FileReader{
-		FilePathFunc: func() string { return goai.ConfigFilePath("prompt.txt") },
-	}
-	prompt := promptReader.ReadFile()
-	operating_system, shell := goai.DetectOSAndShell()
-	prompt = goai.ReplacePlaceholders(prompt, operating_system, shell)
-
 	aiClient := goai.CreateGoAIClient() // Remove the argument
 
 	if len(os.Args) < 2 {
