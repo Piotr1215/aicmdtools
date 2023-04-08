@@ -1,103 +1,36 @@
-package goai
+package main
 
 import (
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"os/exec"
-	"os/user"
-	"path/filepath"
 	"runtime"
 	"strings"
 
-	"github.com/joho/godotenv"
+	"github.com/piotr1215/goai"
 	"github.com/sashabaranov/go-openai"
-	"gopkg.in/yaml.v3"
 )
 
-type Config struct {
-	Model         string  `yaml:"model"`
-	Temperature   float64 `yaml:"temperature"`
-	MaxTokens     int     `yaml:"max_tokens"`
-	Safety        bool    `yaml:"safety"`
-	OpenAI_APIKey string  `yaml:"openai_api_key"`
-}
-
-func configFilePath(filename string) string {
-	homeDir := os.Getenv("HOME")
-	if homeDir == "" {
-		usr, err := user.Current()
-		if err != nil {
-			log.Fatal(err)
-		}
-		homeDir = usr.HomeDir
-	}
-
-	configDir := filepath.Join(homeDir, ".config", "goai")
-	return filepath.Join(configDir, filename)
-}
-
-type FileReader struct {
-	filePathFunc func() string
-}
-
-func (fr *FileReader) ReadFile() string {
-	filePath := fr.filePathFunc()
-
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	content, err := io.ReadAll(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(content)
-}
-
-func detectOSAndShell() (string, string) {
-	os := runtime.GOOS
-	var shell string
-	switch os {
-	case "windows":
-		shell = "cmd"
-	default:
-		shell = "bash"
-	}
-	return os, shell
-}
-
-func replacePlaceholders(prompt, os, shell string) string {
-	prompt = strings.ReplaceAll(prompt, "{os}", os)
-	prompt = strings.ReplaceAll(prompt, "{shell}", shell)
-	return prompt
-}
-
-func parseConfig(configContent string) Config {
-	var config Config
-	err := yaml.Unmarshal([]byte(configContent), &config)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return config
-}
-
-func createOpenAIClient(config Config) *openai.Client {
-	_ = godotenv.Load()
-
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		apiKey = config.OpenAI_APIKey
-	}
-
-	return openai.NewClient(apiKey)
-}
-
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("No user prompt specified.")
+		os.Exit(-1)
+	}
+
+	userPrompt := strings.Join(os.Args[1:], " ")
+
+	// Initialize the GoAI client
+	client := goai.CreateGoAIClient()
+
+	// Use the GoAI client to get a response
+	response, err := client.ProcessCommand(userPrompt)
+	if err != nil {
+		fmt.Printf("Error processing command: %v\n", err)
+		return
+	}
+
 	configReader := &FileReader{
 		filePathFunc: func() string { return configFilePath("config.yaml") },
 	}
