@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -10,41 +9,24 @@ import (
 	"strings"
 
 	"github.com/piotr1215/goai"
-	"github.com/sashabaranov/go-openai"
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("No user prompt specified.")
-		os.Exit(-1)
-	}
-
-	userPrompt := strings.Join(os.Args[1:], " ")
-
-	// Initialize the GoAI client
-	client := goai.CreateGoAIClient()
-
-	// Use the GoAI client to get a response
-	response, err := client.ProcessCommand(userPrompt)
-	if err != nil {
-		fmt.Printf("Error processing command: %v\n", err)
-		return
-	}
-
-	configReader := &FileReader{
-		filePathFunc: func() string { return configFilePath("config.yaml") },
+	// Get the configuration and prompt
+	configReader := &goai.FileReader{
+		FilePathFunc: func() string { return goai.ConfigFilePath("config.yaml") },
 	}
 	configContent := configReader.ReadFile()
-	config := parseConfig(configContent)
+	config := goai.ParseConfig(configContent)
 
-	promptReader := &FileReader{
-		filePathFunc: func() string { return configFilePath("prompt.txt") },
+	promptReader := &goai.FileReader{
+		FilePathFunc: func() string { return goai.ConfigFilePath("prompt.txt") },
 	}
 	prompt := promptReader.ReadFile()
-	operating_system, shell := detectOSAndShell()
-	prompt = replacePlaceholders(prompt, operating_system, shell)
+	operating_system, shell := goai.DetectOSAndShell()
+	prompt = goai.ReplacePlaceholders(prompt, operating_system, shell)
 
-	client := createOpenAIClient(config)
+	goaiClient := goai.CreateGoAIClient(prompt)
 
 	if len(os.Args) < 2 {
 		fmt.Println("No user prompt specified.")
@@ -53,25 +35,9 @@ func main() {
 
 	userPrompt := strings.Join(os.Args[1:], " ")
 
-	response, err := client.CreateChatCompletion(
-		context.Background(),
-		openai.ChatCompletionRequest{
-			Model: openai.GPT4,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: prompt,
-				},
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: userPrompt,
-				},
-			},
-		},
-	)
-
+	response, err := goaiClient.ProcessCommand(userPrompt)
 	if err != nil {
-		fmt.Printf("ChatCompletion error: %v\n", err)
+		fmt.Printf("Error processing command: %v\n", err)
 		return
 	}
 
