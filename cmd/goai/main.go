@@ -12,14 +12,25 @@ import (
 )
 
 func main() {
-	// Get the configuration and prompt
 	configReader := &goai.FileReader{
 		FilePathFunc: func() string { return goai.ConfigFilePath("config.yaml") },
 	}
 	configContent := configReader.ReadFile()
 	config := goai.ParseConfig(configContent)
 
-	aiClient := goai.CreateGoAIClient() // Remove the argument
+	promptReader := &goai.FileReader{
+		FilePathFunc: func() string { return goai.ConfigFilePath("prompt.txt") },
+	}
+	prompt := promptReader.ReadFile()
+	operating_system, shell := goai.DetectOSAndShell()
+	prompt = goai.ReplacePlaceholders(prompt, operating_system, shell)
+
+	client := goai.CreateOpenAIClient(config)
+
+	aiClient := &goai.GoaiClient{
+		Client: client,
+		Prompt: prompt,
+	}
 
 	if len(os.Args) < 2 {
 		fmt.Println("No user prompt specified.")

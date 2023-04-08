@@ -13,21 +13,21 @@ type GoAIClient interface {
 	ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error)
 }
 
-type goaiClient struct {
-	client *openai.Client
-	prompt string
+type GoaiClient struct {
+	Client *openai.Client
+	Prompt string
 }
 
-func (g *goaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error) {
+func (g *GoaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error) {
 
-	response, err := g.client.CreateChatCompletion(
+	response, err := g.Client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,
-					Content: g.prompt,
+					Content: g.Prompt,
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -52,26 +52,4 @@ func CreateOpenAIClient(config Config) *openai.Client {
 	}
 
 	return openai.NewClient(apiKey)
-}
-
-func CreateGoAIClient() GoAIClient {
-	configReader := &FileReader{
-		FilePathFunc: func() string { return ConfigFilePath("config.yaml") },
-	}
-	configContent := configReader.ReadFile()
-	config := ParseConfig(configContent)
-
-	promptReader := &FileReader{
-		FilePathFunc: func() string { return ConfigFilePath("prompt.txt") },
-	}
-	prompt := promptReader.ReadFile()
-	operating_system, shell := DetectOSAndShell()
-	prompt = ReplacePlaceholders(prompt, operating_system, shell)
-
-	client := CreateOpenAIClient(config)
-
-	return &goaiClient{
-		client: client,
-		prompt: prompt,
-	}
 }
