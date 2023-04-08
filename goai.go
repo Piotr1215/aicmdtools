@@ -43,7 +43,7 @@ func (g *goaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionRe
 
 	return &response, nil
 }
-func createOpenAIClient(config Config) *openai.Client {
+func CreateOpenAIClient(config Config) *openai.Client {
 	_ = godotenv.Load()
 
 	apiKey := os.Getenv("OPENAI_API_KEY")
@@ -56,19 +56,19 @@ func createOpenAIClient(config Config) *openai.Client {
 
 func CreateGoAIClient() GoAIClient {
 	configReader := &FileReader{
-		filePathFunc: func() string { return configFilePath("config.yaml") },
+		FilePathFunc: func() string { return ConfigFilePath("config.yaml") },
 	}
 	configContent := configReader.ReadFile()
-	config := parseConfig(configContent)
+	config := ParseConfig(configContent)
 
 	promptReader := &FileReader{
-		filePathFunc: func() string { return configFilePath("prompt.txt") },
+		FilePathFunc: func() string { return ConfigFilePath("prompt.txt") },
 	}
 	prompt := promptReader.ReadFile()
-	operating_system, shell := detectOSAndShell()
-	prompt = replacePlaceholders(prompt, operating_system, shell)
+	operating_system, shell := DetectOSAndShell()
+	prompt = ReplacePlaceholders(prompt, operating_system, shell)
 
-	client := createOpenAIClient(config)
+	client := CreateOpenAIClient(config)
 
 	return &goaiClient{
 		client: client,

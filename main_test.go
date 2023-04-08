@@ -49,7 +49,7 @@ func TestReadPrompt(t *testing.T) {
 	defer os.Remove(tempPromptFilePath)
 
 	promptReader := &FileReader{
-		filePathFunc: func() string { return tempPromptFilePath },
+		FilePathFunc: func() string { return tempPromptFilePath },
 	}
 
 	result := promptReader.ReadFile()
@@ -69,7 +69,7 @@ func TestReadConfig(t *testing.T) {
 	defer os.Remove(tempConfigFilePath)
 
 	configReader := &FileReader{
-		filePathFunc: func() string { return tempConfigFilePath },
+		FilePathFunc: func() string { return tempConfigFilePath },
 	}
 
 	result := configReader.ReadFile()

@@ -9,11 +9,11 @@ import (
 )
 
 type FileReader struct {
-	filePathFunc func() string
+	FilePathFunc func() string
 }
 
 func (fr *FileReader) ReadFile() string {
-	filePath := fr.filePathFunc()
+	filePath := fr.FilePathFunc()
 
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -28,7 +28,7 @@ func (fr *FileReader) ReadFile() string {
 	return string(content)
 }
 
-func detectOSAndShell() (string, string) {
+func DetectOSAndShell() (string, string) {
 	os := runtime.GOOS
 	var shell string
 	switch os {
@@ -40,7 +40,7 @@ func detectOSAndShell() (string, string) {
 	return os, shell
 }
 
-func replacePlaceholders(prompt, os, shell string) string {
+func ReplacePlaceholders(prompt, os, shell string) string {
 	prompt = strings.ReplaceAll(prompt, "{os}", os)
 	prompt = strings.ReplaceAll(prompt, "{shell}", shell)
 	return prompt

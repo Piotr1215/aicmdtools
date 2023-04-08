@@ -17,7 +17,7 @@ type Config struct {
 	OpenAI_APIKey string  `yaml:"openai_api_key"`
 }
 
-func configFilePath(filename string) string {
+func ConfigFilePath(filename string) string {
 	homeDir := os.Getenv("HOME")
 	if homeDir == "" {
 		usr, err := user.Current()
@@ -31,7 +31,7 @@ func configFilePath(filename string) string {
 	return filepath.Join(configDir, filename)
 }
 
-func parseConfig(configContent string) Config {
+func ParseConfig(configContent string) Config {
 	var config Config
 	err := yaml.Unmarshal([]byte(configContent), &config)
 	if err != nil {

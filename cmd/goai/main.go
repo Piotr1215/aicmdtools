@@ -26,7 +26,7 @@ func main() {
 	operating_system, shell := goai.DetectOSAndShell()
 	prompt = goai.ReplacePlaceholders(prompt, operating_system, shell)
 
-	goaiClient := goai.CreateGoAIClient(prompt)
+	aiClient := goai.CreateGoAIClient() // Remove the argument
 
 	if len(os.Args) < 2 {
 		fmt.Println("No user prompt specified.")
@@ -35,7 +35,7 @@ func main() {
 
 	userPrompt := strings.Join(os.Args[1:], " ")
 
-	response, err := goaiClient.ProcessCommand(userPrompt)
+	response, err := aiClient.ProcessCommand(userPrompt)
 	if err != nil {
 		fmt.Printf("Error processing command: %v\n", err)
 		return
