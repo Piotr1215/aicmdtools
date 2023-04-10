@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -10,6 +11,18 @@ import (
 
 	"github.com/piotr1215/goai"
 )
+
+func shouldExecuteCommand(config *goai.Config, reader io.Reader) bool {
+	if !config.Safety {
+		return true
+	}
+
+	fmt.Print("Execute the command? [Enter/n] ==> ")
+	var answer string
+	_, _ = fmt.Fscanln(reader, &answer)
+
+	return strings.ToUpper(answer) != "N"
+}
 
 func main() {
 	configReader := &goai.FileReader{
@@ -50,12 +63,7 @@ func main() {
 
 	execute := true
 	if config.Safety {
-		fmt.Print("Execute the command? [Y/n] ==> ")
-		var answer string
-		_, _ = fmt.Scanln(&answer)
-		if strings.ToUpper(answer) == "N" {
-			execute = false
-		}
+		execute = shouldExecuteCommand(&config, os.Stdin)
 	}
 
 	if execute {

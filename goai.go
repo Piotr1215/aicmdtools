@@ -9,7 +9,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type GoAIClient interface {
+type GAIClient interface {
 	ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error)
 }
 
