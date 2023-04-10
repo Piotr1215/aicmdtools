@@ -1,4 +1,4 @@
-package goai
+package utils
 
 import (
 	"io/ioutil"

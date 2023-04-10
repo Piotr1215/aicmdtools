@@ -2,7 +2,7 @@
 
 set -e
 
-CONFIG_DIR="$HOME/.config/goai"
+CONFIG_DIR="$HOME/.config/aicmdtools"
 SRC_DIR="$(pwd)"
 CONFIG_FILES_DIR="${SRC_DIR}/config"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version_file="./cmd/goai/main.go"
+version_file="./cmd/aicmd/main.go"
 
 # Get the current version from the version.go file
 current_version=$(grep -oP 'version = "\K[^"]+' $version_file)

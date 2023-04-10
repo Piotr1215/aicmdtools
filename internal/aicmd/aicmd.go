@@ -1,4 +1,4 @@
-package goai
+package aicmd
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/piotr1215/aicmdtools/internal/config"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -43,7 +44,7 @@ func (g *GoaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionRe
 
 	return &response, nil
 }
-func CreateOpenAIClient(config Config) *openai.Client {
+func CreateOpenAIClient(config config.Config) *openai.Client {
 	_ = godotenv.Load()
 
 	apiKey := os.Getenv("OPENAI_API_KEY")

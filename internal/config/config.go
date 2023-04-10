@@ -1,4 +1,4 @@
-package goai
+package config
 
 import (
 	"log"
@@ -27,7 +27,7 @@ func ConfigFilePath(filename string) string {
 		homeDir = usr.HomeDir
 	}
 
-	configDir := filepath.Join(homeDir, ".config", "goai")
+	configDir := filepath.Join(homeDir, ".config", "aicmdtools")
 	return filepath.Join(configDir, filename)
 }
 

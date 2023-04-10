@@ -10,12 +10,14 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/piotr1215/goai"
+	"github.com/piotr1215/aicmdtools/internal/aicmd"
+	"github.com/piotr1215/aicmdtools/internal/config"
+	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.7"
+var version = "v0.0.9"
 
-func shouldExecuteCommand(config *goai.Config, reader io.Reader) bool {
+func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
 	if !config.Safety {
 		return true
 	}
@@ -37,22 +39,22 @@ func main() {
 		return
 	}
 
-	configReader := &goai.FileReader{
-		FilePathFunc: func() string { return goai.ConfigFilePath("config.yaml") },
+	configReader := &utils.FileReader{
+		FilePathFunc: func() string { return config.ConfigFilePath("config.yaml") },
 	}
 	configContent := configReader.ReadFile()
-	config := goai.ParseConfig(configContent)
+	conf := config.ParseConfig(configContent)
 
-	promptReader := &goai.FileReader{
-		FilePathFunc: func() string { return goai.ConfigFilePath("prompt.txt") },
+	promptReader := &utils.FileReader{
+		FilePathFunc: func() string { return config.ConfigFilePath("prompt.txt") },
 	}
 	prompt := promptReader.ReadFile()
-	operating_system, shell := goai.DetectOSAndShell()
-	prompt = goai.ReplacePlaceholders(prompt, operating_system, shell)
+	operating_system, shell := utils.DetectOSAndShell()
+	prompt = utils.ReplacePlaceholders(prompt, operating_system, shell)
 
-	client := goai.CreateOpenAIClient(config)
+	client := aicmd.CreateOpenAIClient(conf)
 
-	aiClient := &goai.GoaiClient{
+	aiClient := &aicmd.GoaiClient{
 		Client: client,
 		Prompt: prompt,
 	}
@@ -74,8 +76,8 @@ func main() {
 	fmt.Printf("Command: %s\n", command)
 
 	execute := true
-	if config.Safety {
-		execute = shouldExecuteCommand(&config, os.Stdin)
+	if conf.Safety {
+		execute = shouldExecuteCommand(&conf, os.Stdin)
 	}
 
 	if execute {

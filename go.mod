@@ -1,4 +1,4 @@
-module github.com/piotr1215/goai
+module github.com/piotr1215/aicmdtools
 
 go 1.20
 

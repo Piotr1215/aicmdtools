@@ -5,11 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/piotr1215/goai"
+	"github.com/piotr1215/aicmdtools/internal/config"
 )
 
 func TestShouldExecuteCommand(t *testing.T) {
-	config := &goai.Config{
+	config := &config.Config{
 		Safety: true,
 	}
 
