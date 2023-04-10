@@ -8,14 +8,34 @@ import (
 	"strings"
 )
 
+type FileOpener interface {
+	Open(name string) (FileReaderCloser, error)
+}
+
+type osFileOpener struct{}
+
+func (o *osFileOpener) Open(name string) (FileReaderCloser, error) {
+	return os.Open(name)
+}
+
+type FileReaderCloser interface {
+	io.Reader
+	io.Closer
+}
+
 type FileReader struct {
 	FilePathFunc func() string
+	FileOpener   FileOpener
 }
 
 func (fr *FileReader) ReadFile() string {
 	filePath := fr.FilePathFunc()
 
-	file, err := os.Open(filePath)
+	if fr.FileOpener == nil {
+		fr.FileOpener = &osFileOpener{}
+	}
+
+	file, err := fr.FileOpener.Open(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}

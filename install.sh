@@ -6,9 +6,6 @@ CONFIG_DIR="$HOME/.config/goai"
 SRC_DIR="$(pwd)"
 CONFIG_FILES_DIR="${SRC_DIR}/config"
 
-echo "Installing goai..."
-go install .
-
 echo "Creating configuration directory..."
 mkdir -p "${CONFIG_DIR}"
 
