@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -12,6 +13,8 @@ import (
 	"github.com/piotr1215/goai"
 )
 
+var version = "v0.0.7"
+
 func shouldExecuteCommand(config *goai.Config, reader io.Reader) bool {
 	if !config.Safety {
 		return true
@@ -20,11 +23,20 @@ func shouldExecuteCommand(config *goai.Config, reader io.Reader) bool {
 	fmt.Print("Execute the command? [Enter/n] ==> ")
 	var answer string
 	_, _ = fmt.Fscanln(reader, &answer)
+	fmt.Printf("User input: %q\n", answer) // Add this line to print the user input
 
 	return strings.ToUpper(answer) != "N"
 }
 
 func main() {
+	versionFlag := flag.Bool("version", false, "Display version information")
+	flag.Parse()
+
+	if *versionFlag {
+		fmt.Printf("Goai version: %s\n", version)
+		return
+	}
+
 	configReader := &goai.FileReader{
 		FilePathFunc: func() string { return goai.ConfigFilePath("config.yaml") },
 	}
