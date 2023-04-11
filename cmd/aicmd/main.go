@@ -15,7 +15,7 @@ import (
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.9"
+var version = "v0.0.11"
 
 func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
 	if !config.Safety {
@@ -25,7 +25,6 @@ func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
 	fmt.Print("Execute the command? [Enter/n] ==> ")
 	var answer string
 	_, _ = fmt.Fscanln(reader, &answer)
-	fmt.Printf("User input: %q\n", answer) // Add this line to print the user input
 
 	return strings.ToUpper(answer) != "N"
 }

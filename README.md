@@ -1,6 +1,6 @@
-# GoAI
+# AI Command Line Tools
 
-GoAI is a command-line tool that utilizes the OpenAI CahtGPT API to generate shell
+AICmdTools is a command-line tool that utilizes the OpenAI CahtGPT API to generate shell
 commands based on user input. It's built with Go and designed for ease of use,
 providing a simple and efficient way to interact with ChatGPT API. Project
 inspired by https://github.com/wunderwuzzi23/yolo-ai-cmdbot.
@@ -31,7 +31,7 @@ inspired by https://github.com/wunderwuzzi23/yolo-ai-cmdbot.
 
 ## Usage
 
-To use GoAI, simply run the following command:
+To use AICmdTools, simply run the following command:
 
     aicmdtools "<your_input_here>"
 
@@ -39,15 +39,15 @@ Replace `<your_input_here>` with your desired input. For example:
 
     aicmdtools "create a new directory called my_project"
 
-GoAI will generate a shell command based on the input, and if the safety feature is enabled in the configuration, it will prompt you to confirm whether you want to execute the command. If you confirm, the command will be executed in your shell.
+AICmdTools will generate a shell command based on the input, and if the safety feature is enabled in the configuration, it will prompt you to confirm whether you want to execute the command. If you confirm, the command will be executed in your shell.
 
 ## Configuration
 
-You can customize the behavior of GoAI by modifying the `config.yaml` file located in `$HOME/.config/aicmdtools`. The available options include:
+You can customize the behavior of AICmdTools by modifying the `config.yaml` file located in `$HOME/.config/aicmdtools`. The available options include:
 
 - `openai_api_key`: Your OpenAI API key.
   > alternatively the api key can be passed via variable `$OPENAI_API_KEY`
-- `safety`: If set to `true`, GoAI will prompt you to confirm before executing any generated command.
+- `safety`: If set to `true`, AICmdTools will prompt you to confirm before executing any generated command.
 - `model`: any model that you have access to
   > to list all available models use `curl https://api.openai.com/v1/models \
   -H "Authorization: Bearer $OPENAI_API_KEY" `
@@ -63,4 +63,4 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 
 ## License
 
-GoAI is released under the MIT License. See the `LICENSE` file for more information.
+AICmdTools is released under the MIT License. See the `LICENSE` file for more information.
