@@ -15,7 +15,7 @@ import (
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.11"
+var version = "v0.0.22"
 
 func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
 	if !config.Safety {
@@ -35,6 +35,12 @@ func main() {
 
 	if *versionFlag {
 		fmt.Printf("Goai version: %s\n", version)
+		changelog, err := utils.GenerateChangelog(exec.Command)
+		if err != nil {
+			fmt.Printf("Error generating changelog: %v\n", err)
+		} else {
+			fmt.Printf("\nChangelog:\n%s", changelog)
+		}
 		return
 	}
 
