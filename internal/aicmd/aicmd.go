@@ -1,56 +1,83 @@
 package aicmd
 
 import (
-	"context"
 	"fmt"
+	"io"
+	"log"
 	"os"
+	"os/exec"
+	"runtime"
+	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/piotr1215/aicmdtools/internal/config"
-	"github.com/sashabaranov/go-openai"
+	"github.com/piotr1215/aicmdtools/internal/nlp"
+	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-type GAIClient interface {
-	ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error)
+func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
+	if !config.Safety {
+		return true
+	}
+
+	fmt.Print("Execute the command? [Enter/n] ==> ")
+	var answer string
+	_, _ = fmt.Fscanln(reader, &answer)
+
+	return strings.ToUpper(answer) != "N"
 }
+func Execute(prompt_file string) error {
 
-type GoaiClient struct {
-	Client *openai.Client
-	Prompt string
-}
-
-func (g *GoaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error) {
-
-	response, err := g.Client.CreateChatCompletion(
-		context.Background(),
-		openai.ChatCompletionRequest{
-			Model: openai.GPT4,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: g.Prompt,
-				},
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: userPrompt,
-				},
-			},
-		},
-	)
-
+	conf, prompt, err := config.ReadAndParseConfig("config.yaml", prompt_file)
 	if err != nil {
-		return nil, fmt.Errorf("ChatCompletion error: %v", err)
+		fmt.Printf("Error reading and parsing configuration: %v\n", err)
+		os.Exit(-1)
+	}
+	operating_system, shell := utils.DetectOSAndShell()
+	prompt = utils.ReplacePlaceholders(prompt, operating_system, shell)
+
+	client := nlp.CreateOpenAIClient(*conf)
+
+	aiClient := nlp.GoaiClient{
+		Client: client,
+		Prompt: prompt,
 	}
 
-	return &response, nil
-}
-func CreateOpenAIClient(config config.Config) *openai.Client {
-	_ = godotenv.Load()
-
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		apiKey = config.OpenAI_APIKey
+	if len(os.Args) < 2 {
+		fmt.Println("No user prompt specified.")
+		os.Exit(-1)
 	}
 
-	return openai.NewClient(apiKey)
+	userPrompt := strings.Join(os.Args[1:], " ")
+
+	response, err := aiClient.ProcessCommand(userPrompt)
+	if err != nil {
+		fmt.Printf("Error processing command: %v\n", err)
+		return err
+	}
+
+	command := response.Choices[0].Message.Content
+	fmt.Printf("Command: %s\n", command)
+
+	execute := true
+	if conf.Safety {
+		execute = shouldExecuteCommand(conf, os.Stdin)
+	}
+
+	if execute {
+		var cmd *exec.Cmd
+		// Use "sh -c" for Unix-like systems and "cmd /C" for Windows
+		if runtime.GOOS == "windows" {
+			cmd = exec.Command("cmd", "/C", command)
+		} else {
+			cmd = exec.Command("sh", "-c", command)
+		}
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err = cmd.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return nil
 }

@@ -3,31 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
-	"log"
 	"os"
 	"os/exec"
-	"runtime"
-	"strings"
 
 	"github.com/piotr1215/aicmdtools/internal/aicmd"
-	"github.com/piotr1215/aicmdtools/internal/config"
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.22"
-
-func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
-	if !config.Safety {
-		return true
-	}
-
-	fmt.Print("Execute the command? [Enter/n] ==> ")
-	var answer string
-	_, _ = fmt.Fscanln(reader, &answer)
-
-	return strings.ToUpper(answer) != "N"
-}
+var version = "v0.0.63"
+var prompt_file = "prompt.txt"
 
 func main() {
 	versionFlag := flag.Bool("version", false, "Display version information")
@@ -43,62 +27,9 @@ func main() {
 		}
 		return
 	}
-
-	configReader := &utils.FileReader{
-		FilePathFunc: func() string { return config.ConfigFilePath("config.yaml") },
-	}
-	configContent := configReader.ReadFile()
-	conf := config.ParseConfig(configContent)
-
-	promptReader := &utils.FileReader{
-		FilePathFunc: func() string { return config.ConfigFilePath("prompt.txt") },
-	}
-	prompt := promptReader.ReadFile()
-	operating_system, shell := utils.DetectOSAndShell()
-	prompt = utils.ReplacePlaceholders(prompt, operating_system, shell)
-
-	client := aicmd.CreateOpenAIClient(conf)
-
-	aiClient := &aicmd.GoaiClient{
-		Client: client,
-		Prompt: prompt,
-	}
-
-	if len(os.Args) < 2 {
-		fmt.Println("No user prompt specified.")
-		os.Exit(-1)
-	}
-
-	userPrompt := strings.Join(os.Args[1:], " ")
-
-	response, err := aiClient.ProcessCommand(userPrompt)
+	err := aicmd.Execute(prompt_file)
 	if err != nil {
-		fmt.Printf("Error processing command: %v\n", err)
-		return
-	}
-
-	command := response.Choices[0].Message.Content
-	fmt.Printf("Command: %s\n", command)
-
-	execute := true
-	if conf.Safety {
-		execute = shouldExecuteCommand(&conf, os.Stdin)
-	}
-
-	if execute {
-		var cmd *exec.Cmd
-		// Use "sh -c" for Unix-like systems and "cmd /C" for Windows
-		if runtime.GOOS == "windows" {
-			cmd = exec.Command("cmd", "/C", command)
-		} else {
-			cmd = exec.Command("sh", "-c", command)
-		}
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err = cmd.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(-1)
 	}
 }
