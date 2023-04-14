@@ -73,7 +73,7 @@ func Execute() error {
 	}
 
 	command := response.Choices[0].Message.Content
-	fmt.Printf("Command: %s\n", command)
+	fmt.Printf("%s\n", command)
 
 	return nil
 }
