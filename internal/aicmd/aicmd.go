@@ -9,21 +9,77 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/piotr1215/aicmdtools/internal/config"
 	"github.com/piotr1215/aicmdtools/internal/nlp"
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-func shouldExecuteCommand(config *config.Config, reader io.Reader) bool {
+type Executor interface {
+	Execute(command string) error
+}
+
+type DefaultExecutor struct{}
+type CommandDecision int
+
+const (
+	CmdExecute CommandDecision = iota
+	CmdCopy
+	CmdDoNothing
+)
+
+func (e *DefaultExecutor) Execute(command string) error {
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/C", command)
+	} else {
+		cmd = exec.Command("sh", "-c", command)
+	}
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+// Inject the executor as a global variable
+var executor Executor = &DefaultExecutor{}
+
+func shouldExecuteCommand(config *config.Config, reader io.Reader) CommandDecision {
 	if !config.Safety {
-		return true
+		return CmdExecute
 	}
 
-	fmt.Print("Execute the command? [Enter/n] ==> ")
+	fmt.Print("Execute the command? [Enter/n/c(opy)] ==> ")
 	var answer string
 	_, _ = fmt.Fscanln(reader, &answer)
 
-	return strings.ToUpper(answer) != "N"
+	switch strings.ToUpper(answer) {
+	case "N":
+		return CmdDoNothing
+	case "C":
+		return CmdCopy
+	default:
+		return CmdExecute
+	}
+}
+
+func copyCommandToClipboard(command string) error {
+	return clipboard.WriteAll(command)
+}
+
+func appendCommandToHistory(command string) {
+	historyFile := "command_history.txt"
+
+	f, err := os.OpenFile(historyFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Printf("Error opening command history file: %v\n", err)
+		return
+	}
+	defer f.Close()
+
+	if _, err := f.WriteString(command + "\n"); err != nil {
+		log.Printf("Error writing command to history file: %v\n", err)
+	}
 }
 func Execute(prompt_file string) error {
 
@@ -58,26 +114,28 @@ func Execute(prompt_file string) error {
 	command := response.Choices[0].Message.Content
 	fmt.Printf("Command: %s\n", command)
 
-	execute := true
-	if conf.Safety {
-		execute = shouldExecuteCommand(conf, os.Stdin)
+	decision := shouldExecuteCommand(conf, os.Stdin)
+
+	if decision == CmdExecute || decision == CmdCopy {
+		err = copyCommandToClipboard(command)
+		if err != nil {
+			log.Printf("Error copying command to clipboard: %v\n", err)
+		}
 	}
 
-	if execute {
-		var cmd *exec.Cmd
-		// Use "sh -c" for Unix-like systems and "cmd /C" for Windows
-		if runtime.GOOS == "windows" {
-			cmd = exec.Command("cmd", "/C", command)
-		} else {
-			cmd = exec.Command("sh", "-c", command)
-		}
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err = cmd.Run()
+	switch decision {
+	case CmdExecute:
+		err = executor.Execute(command)
 		if err != nil {
 			log.Fatal(err)
 		}
+		appendCommandToHistory(command)
+	case CmdCopy:
+		fmt.Println("Command copied to clipboard.")
+	case CmdDoNothing:
+		fmt.Println("Command not executed.")
+	default:
+		fmt.Println("Invalid decision.")
 	}
 	return nil
 }

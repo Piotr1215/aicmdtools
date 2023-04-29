@@ -10,7 +10,7 @@ import (
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.93"
+var version = "v0.0.105"
 var prompt_file = "prompt.txt"
 
 func main() {

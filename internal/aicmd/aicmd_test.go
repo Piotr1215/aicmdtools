@@ -8,6 +8,14 @@ import (
 	"github.com/piotr1215/aicmdtools/internal/config"
 )
 
+type MockExecutor struct {
+	Err error
+}
+
+func (m *MockExecutor) Execute(command string) error {
+	return m.Err
+}
+
 func TestShouldExecuteCommand(t *testing.T) {
 	config := &config.Config{
 		Safety: true,
