@@ -13,6 +13,11 @@ import (
 var version = "v0.0.107"
 var prompt_file = "prompt.txt"
 
+// main is the entry point for the Goai command-line tool.
+// It parses command-line flags and executes appropriate actions.
+// If the "version" flag is set, it displays the version information and changelog.
+// If the "version" flag is not set, it executes the command specified in the "prompt.txt" file.
+// If an error occurs during execution, it prints an error message and exits with a non-zero status code.
 func main() {
 	versionFlag := flag.Bool("version", false, "Display version information")
 	flag.Parse()
