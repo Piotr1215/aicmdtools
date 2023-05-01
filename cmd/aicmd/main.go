@@ -29,7 +29,7 @@ func main() {
 	}
 	err := aicmd.Execute(prompt_file)
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		fmt.Printf("Error executing command: %v\n", err)
 		os.Exit(-1)
 	}
 }
