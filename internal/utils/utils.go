@@ -18,7 +18,7 @@ const changelogScript = `#!/usr/bin/env bash
 num_commits="${1:-10}"
 
 # Get the remote URL for the current Git repository
-remote_url=$(git remote get-url origin | sed -E 's/.*github.com.(.*)\.git/\1/' | sed 's/:/\//')
+remote_url="Piotr1215/aicmdtools"
 
 # Get the git log
 git_log_output=$(git log --oneline --decorate=short -n "$num_commits" 2>&1)
