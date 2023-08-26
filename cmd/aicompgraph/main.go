@@ -7,6 +7,8 @@ import (
 	"github.com/piotr1215/aicmdtools/internal/aicompgraph"
 )
 
+var version = "v0.0.1"
+
 func main() {
 
 	err := aicompgraph.Execute()
