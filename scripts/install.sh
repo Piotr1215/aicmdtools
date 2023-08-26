@@ -14,4 +14,5 @@ echo -e "Copying:\n${file_list}\nto ${CONFIG_DIR} ..."
 
 cp "${CONFIG_FILES_DIR}/config.yaml" "${CONFIG_DIR}/config.yaml"
 cp "${CONFIG_FILES_DIR}/prompt.txt" "${CONFIG_DIR}/prompt.txt"
+cp "${CONFIG_FILES_DIR}/chat-prompt.txt" "${CONFIG_DIR}/chat-prompt.txt"
 cp "${CONFIG_FILES_DIR}/comp-graph-prompt.txt" "${CONFIG_DIR}/comp-graph-prompt.txt"
