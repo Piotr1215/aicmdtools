@@ -25,7 +25,7 @@ inspired by https://github.com/wunderwuzzi23/yolo-ai-cmdbot.
 
 2.  Install the command-line tool:
 
-    go install github.com/piotr1215/aicmdtools/cmd/aicmdtools@latest
+    go install github.com/piotr1215/aicmdtools/cmd/aicmd@latest
 
 3.  Run the provided installation script to set up configuration files:
 
