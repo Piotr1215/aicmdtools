@@ -112,7 +112,11 @@ func Execute(prompt_file string) error {
 	}
 
 	command := response.Choices[0].Message.Content
-	fmt.Printf("Command: %s\n", command)
+	command = strings.TrimPrefix(command, "```bash")
+	command = strings.TrimPrefix(command, "```")
+	command = strings.TrimSuffix(command, "```")
+	command = strings.TrimSpace(command)
+	fmt.Printf("%s\n", command)
 
 	decision := shouldExecuteCommand(conf, os.Stdin)
 
