@@ -3,6 +3,7 @@ package aichat
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/alecthomas/chroma/formatters"
@@ -191,7 +192,13 @@ func Initialize() *nlp.GoaiClient {
 func SendMessage(client *nlp.GoaiClient, userMessage string) (string, error) {
 	userMessage = strings.TrimSpace(userMessage) // Remove trailing newline
 
-	response, err := client.ProcessCommand(userMessage)
+	conf, _, err := config.ReadAndParseConfig("config.yaml", prompt_file)
+		if err != nil {
+		fmt.Printf("Error reading and parsing configuration: %v\n", err)
+		os.Exit(-1)
+	}
+
+	response, err := client.ProcessCommand(userMessage, *conf)
 	if err != nil {
 		return "", err
 	}

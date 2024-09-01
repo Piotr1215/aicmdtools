@@ -105,7 +105,7 @@ func Execute(prompt_file string) error {
 
 	userPrompt := strings.Join(os.Args[1:], " ")
 
-	response, err := aiClient.ProcessCommand(userPrompt)
+	response, err := aiClient.ProcessCommand(userPrompt, *conf)
 	if err != nil {
 		fmt.Printf("Error processing command: %v\n", err)
 		return err

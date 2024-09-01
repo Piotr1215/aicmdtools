@@ -11,7 +11,7 @@ import (
 )
 
 type GAIClient interface {
-	ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error)
+	ProcessCommand(userPrompt string, conf config.Config) (*openai.ChatCompletionResponse, error)
 }
 
 type GoaiClient struct {
@@ -19,12 +19,13 @@ type GoaiClient struct {
 	Prompt string
 }
 
-func (g *GoaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionResponse, error) {
+func (g *GoaiClient) ProcessCommand(userPrompt string, conf config.Config) (*openai.ChatCompletionResponse, error) {
 
+	// Map the model from the config to the OpenAI model
 	response, err := g.Client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4,
+			Model: conf.Model,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,
@@ -44,13 +45,15 @@ func (g *GoaiClient) ProcessCommand(userPrompt string) (*openai.ChatCompletionRe
 
 	return &response, nil
 }
-func CreateOpenAIClient(config config.Config) *openai.Client {
+func CreateOpenAIClient(conf config.Config) *openai.Client {
 	_ = godotenv.Load()
 
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
-		apiKey = config.OpenAI_APIKey
+		apiKey = conf.OpenAI_APIKey
 	}
 
-	return openai.NewClient(apiKey)
+	client := openai.NewClient(apiKey)
+
+	return client
 }

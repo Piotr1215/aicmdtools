@@ -66,7 +66,7 @@ func Execute() error {
 		Prompt: prompt,
 	}
 
-	response, err := aiClient.ProcessCommand(userPrompt)
+	response, err := aiClient.ProcessCommand(userPrompt, conf)
 	if err != nil {
 		fmt.Printf("Error processing command: %v\n", err)
 		return err

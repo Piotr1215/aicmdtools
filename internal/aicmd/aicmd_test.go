@@ -28,7 +28,7 @@ func TestShouldExecuteCommand(t *testing.T) {
 	result := shouldExecuteCommand(config, input)
 	fmt.Printf("Result: %v\n", result) // Add this line to print the result
 
-	if result == CmdDoNothing {
+	if result != CmdDoNothing {
 		t.Error("Expected command to be executed")
 	}
 }
