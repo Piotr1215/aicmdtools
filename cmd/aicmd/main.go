@@ -7,10 +7,11 @@ import (
 	"os/exec"
 
 	"github.com/piotr1215/aicmdtools/internal/aicmd"
+	"github.com/piotr1215/aicmdtools/internal/config"
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.151"
+var version = "v0.0.154"
 var prompt_file = "prompt.txt"
 
 // main is the entry point for the Goai command-line tool.
@@ -20,7 +21,18 @@ var prompt_file = "prompt.txt"
 // If an error occurs during execution, it prints an error message and exits with a non-zero status code.
 func main() {
 	versionFlag := flag.Bool("version", false, "Display version information")
+	modelFlag := flag.Bool("model", false, "Display current model")
 	flag.Parse()
+
+	if *modelFlag {
+		conf, _, err := config.ReadAndParseConfig("config.yaml", prompt_file)
+		if err != nil {
+			fmt.Printf("Error reading configuration: %v\n", err)
+			os.Exit(-1)
+		}
+		fmt.Printf("Current model: %s\n", conf.Model)
+		return
+	}
 
 	if *versionFlag {
 		fmt.Printf("Goai version: %s\n", version)
