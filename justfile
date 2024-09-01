@@ -1,7 +1,7 @@
 test:
 	go test ./... -v
 
-install: build_cli build_graph build_chat copy_files
+install: build_cli build_graph build_chat
   @cd cmd/aicmd && go install
   @cd cmd/aicompgraph && go install
   @cd cmd/aichat && go install

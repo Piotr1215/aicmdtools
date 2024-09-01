@@ -20,14 +20,21 @@ inspired by https://github.com/wunderwuzzi23/yolo-ai-cmdbot.
 
 1.  Clone the repository:
 
-    git clone https://github.com/piotr1215/aicmdtools.git
-    cd aicmdtools
+```bash
+git clone https://github.com/piotr1215/aicmdtools.git
+cd aicmdtools
+```
 
 2.  Install the command-line tool:
 
-    go install github.com/piotr1215/aicmdtools/cmd/aicmd@latest
+```bash
+go install github.com/piotr1215/aicmdtools/cmd/aicmd@latest \
+           github.com/piotr1215/aicmdtools/cmd/aicompgraph@latest \
+           github.com/piotr1215/aicmdtools/cmd/aichat@latest
+```
 
-3.  Run the provided installation script to set up configuration files:
+
+3.  If running for the first time, bun the provided installation script to set up configuration files:
 
         ./install.sh
 
