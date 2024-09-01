@@ -32,30 +32,30 @@ configuration files:
 
 ```bash
 just install
-just copy_files # if executing for the first time
 ```
 
-3.  If running for the first time, bun the provided installation script to set up configuration files:
+If running for the first time, bun the provided installation script to set up configuration files:
 
-        ./install.sh
+This will copy the `config.yaml` and `prompt.txt` files to the appropriate location in your home directory (e.g., `$HOME/.config/aicmdtools`).
 
-    This script will copy the `config.yaml` and `prompt.txt` files to the appropriate location in your home directory (e.g., `$HOME/.config/aicmdtools`).
+```bash
+just copy_files 
+```
 
 ## Usage
 
-To use AICmdTools, simply run the following command:
+There are 3 separate commands that you can use:
 
-    aicmdtools "<your_input_here>"
+- `aicmd`: Generate a shell command based on user input.
+> Example: aicmdtools "create a new directory called my_project"
 
-Replace `<your_input_here>` with your desired input. For example:
-
-    aicmdtools "create a new directory called my_project"
-
-AICmdTools will generate a shell command based on the input, and if the safety feature is enabled in the configuration, it will prompt you to confirm whether you want to execute the command. If you confirm, the command will be executed in your shell.
+- `aichat`: Start a chat with the AI model
+- `aicompgraph`: Generate plantuml diagrams based YAML files (useful for Crossplane diagrams)
 
 ## Commands
 
-- `--model`: Display the current model being used.
+- `-model`: Display the current model being used (supported by `aicmd`)
+- `-version`: Display the current version (supported by all CLIs)
 
 ## Configuration
 
