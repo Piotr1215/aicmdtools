@@ -45,6 +45,10 @@ Replace `<your_input_here>` with your desired input. For example:
 
 AICmdTools will generate a shell command based on the input, and if the safety feature is enabled in the configuration, it will prompt you to confirm whether you want to execute the command. If you confirm, the command will be executed in your shell.
 
+## Commands
+
+- `--model`: Display the current model being used.
+
 ## Configuration
 
 You can customize the behavior of AICmdTools by modifying the `config.yaml` file located in `$HOME/.config/aicmdtools`. The available options include:
@@ -52,9 +56,9 @@ You can customize the behavior of AICmdTools by modifying the `config.yaml` file
 - `openai_api_key`: Your OpenAI API key.
   > alternatively the api key can be passed via variable `$OPENAI_API_KEY`
 - `safety`: If set to `true`, AICmdTools will prompt you to confirm before executing any generated command.
-- `model`: any model that you have access to
+- `model`: any supported model that you have access to
   > to list all available models use `curl https://api.openai.com/v1/models \
--H "Authorization: Bearer $OPENAI_API_KEY" `
+-H "Authorization: Bearer $OPENAI_API_KEY"`
 
 ### Prompt
 
