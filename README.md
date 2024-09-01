@@ -25,14 +25,15 @@ git clone https://github.com/piotr1215/aicmdtools.git
 cd aicmdtools
 ```
 
-2.  Install the command-line tool:
+2.  Install all the command-line tools:
+
+Use `just` command runner to install the commands and optionally copy the
+configuration files:
 
 ```bash
-go install github.com/piotr1215/aicmdtools/cmd/aicmd@latest \
-           github.com/piotr1215/aicmdtools/cmd/aicompgraph@latest \
-           github.com/piotr1215/aicmdtools/cmd/aichat@latest
+just install
+just copy_files # if executing for the first time
 ```
-
 
 3.  If running for the first time, bun the provided installation script to set up configuration files:
 
