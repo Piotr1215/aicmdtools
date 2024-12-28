@@ -49,7 +49,7 @@ func shouldExecuteCommand(config *config.Config, reader io.Reader) CommandDecisi
 		return CmdExecute
 	}
 
-	fmt.Print("Execute the command? [Enter/n/c(opy)] ==> ")
+	fmt.Printf("[Model] %s\nExecute the command? [Enter/n/c(opy)] ==> ", config.Model)
 	var answer string
 	_, _ = fmt.Fscanln(reader, &answer)
 
