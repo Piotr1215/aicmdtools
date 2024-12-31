@@ -67,20 +67,6 @@ func copyCommandToClipboard(command string) error {
 	return clipboard.WriteAll(command)
 }
 
-func appendCommandToHistory(command string) {
-	historyFile := "command_history.txt"
-
-	f, err := os.OpenFile(historyFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Printf("Error opening command history file: %v\n", err)
-		return
-	}
-	defer f.Close()
-
-	if _, err := f.WriteString(command + "\n"); err != nil {
-		log.Printf("Error writing command to history file: %v\n", err)
-	}
-}
 func Execute(prompt_file string) error {
 
 	conf, prompt, err := config.ReadAndParseConfig("config.yaml", prompt_file)
@@ -133,7 +119,6 @@ func Execute(prompt_file string) error {
 		if err != nil {
 			log.Fatal(err)
 		}
-		appendCommandToHistory(command)
 	case CmdCopy:
 		fmt.Println("Command copied to clipboard.")
 	case CmdDoNothing:

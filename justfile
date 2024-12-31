@@ -1,5 +1,8 @@
+default:
+  just --list
+
 test:
-	go test ./... -v
+  go test ./... -v
 
 install: build_cli build_graph build_chat
   @cd cmd/aicmd && go install

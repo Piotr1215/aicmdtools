@@ -96,22 +96,6 @@ func Test_copyCommandToClipboard(t *testing.T) {
 	}
 }
 
-func Test_appendCommandToHistory(t *testing.T) {
-	type args struct {
-		command string
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			appendCommandToHistory(tt.args.command)
-		})
-	}
-}
 
 func TestExecute(t *testing.T) {
 	type args struct {
