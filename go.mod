@@ -1,12 +1,15 @@
 module github.com/piotr1215/aicmdtools
 
-go 1.20
+go 1.23.0
+
+toolchain go1.24.5
 
 require (
+	github.com/anthropics/anthropic-sdk-go v1.16.0
 	github.com/atotto/clipboard v0.1.4
 	github.com/joho/godotenv v1.5.1
 	github.com/sashabaranov/go-openai v1.29.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -23,10 +26,14 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	github.com/tidwall/gjson v1.18.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
+	github.com/tidwall/sjson v1.2.5 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
-	golang.org/x/text v0.3.8 // indirect
+	golang.org/x/text v0.27.0 // indirect
 )
 
 require (

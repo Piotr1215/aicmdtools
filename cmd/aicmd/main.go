@@ -11,7 +11,7 @@ import (
 	"github.com/piotr1215/aicmdtools/internal/utils"
 )
 
-var version = "v0.0.179"
+var version = "v0.0.189"
 var prompt_file = "prompt.txt"
 
 // main is the entry point for the Goai command-line tool.

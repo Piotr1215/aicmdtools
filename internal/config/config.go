@@ -11,11 +11,13 @@ import (
 )
 
 type Config struct {
-	Model         string  `yaml:"model"`
-	Temperature   float64 `yaml:"temperature"`
-	MaxTokens     int     `yaml:"max_tokens"`
-	Safety        bool    `yaml:"safety"`
-	OpenAI_APIKey string  `yaml:"openai_api_key"`
+	Provider         string  `yaml:"provider"` // "openai" or "anthropic"
+	Model            string  `yaml:"model"`
+	Temperature      float64 `yaml:"temperature"`
+	MaxTokens        int     `yaml:"max_tokens"`
+	Safety           bool    `yaml:"safety"`
+	OpenAI_APIKey    string  `yaml:"openai_api_key"`
+	Anthropic_APIKey string  `yaml:"anthropic_api_key"`
 }
 
 func ReadAndParseConfig(configFilename, promptFilename string) (*Config, string, error) {
