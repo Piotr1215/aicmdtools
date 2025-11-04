@@ -12,6 +12,7 @@ import (
 
 type GAIClient interface {
 	ProcessCommand(userPrompt string, conf config.Config) (*openai.ChatCompletionResponse, error)
+	ProcessCommandWithContext(ctx context.Context, userPrompt string, conf config.Config) (*openai.ChatCompletionResponse, error)
 }
 
 type GoaiClient struct {
@@ -45,6 +46,33 @@ func (g *GoaiClient) ProcessCommand(userPrompt string, conf config.Config) (*ope
 
 	return &response, nil
 }
+
+func (g *GoaiClient) ProcessCommandWithContext(ctx context.Context, userPrompt string, conf config.Config) (*openai.ChatCompletionResponse, error) {
+	// Map the model from the config to the OpenAI model
+	response, err := g.Client.CreateChatCompletion(
+		ctx,
+		openai.ChatCompletionRequest{
+			Model: conf.Model,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleSystem,
+					Content: g.Prompt,
+				},
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: userPrompt,
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("ChatCompletion error: %v", err)
+	}
+
+	return &response, nil
+}
+
 func CreateOpenAIClient(conf config.Config) *openai.Client {
 	_ = godotenv.Load()
 

@@ -4,10 +4,11 @@ default:
 test:
   go test ./... -v
 
-install: build_cli build_graph build_chat
+install: build_cli build_graph build_chat build_review
   @cd cmd/aicmd && go install
   @cd cmd/aicompgraph && go install
   @cd cmd/aichat && go install
+  @cd cmd/aicodereview && go install
 
 copy_files:
   @./scripts/install.sh
@@ -23,3 +24,7 @@ build_cli:
 build_chat:
   @./scripts/increment_version.sh
   @go build -ldflags "-X main.version=$(grep -oP 'version = "\K[^"]+' ./cmd/aichat/main.go)" -o aichat cmd/aichat/main.go
+
+build_review:
+  @./scripts/increment_version.sh
+  @go build -ldflags "-X main.version=$(grep -oP 'version = "\K[^"]+' ./cmd/aicodereview/main.go)" -o aicodereview cmd/aicodereview/main.go
