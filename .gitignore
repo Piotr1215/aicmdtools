@@ -1,2 +1,11 @@
 .aider*
 .env
+
+# Compiled binaries
+aicmd
+aichat
+aicompgraph
+aicodereview
+
+# Test files
+test_sample.go
