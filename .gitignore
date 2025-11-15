@@ -6,6 +6,7 @@ aicmd
 aichat
 aicompgraph
 aicodereview
+aifix
 
 # Test files
 test_sample.go

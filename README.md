@@ -14,6 +14,7 @@ inspired by https://github.com/wunderwuzzi23/yolo-ai-cmdbot.
 - Simple command-line interface
 - Supports multiple operating systems and shells
 - Configurable safety feature to confirm command execution
+- Instant error explanation and fix suggestions
 - Easy installation and setup
 
 ## Installation
@@ -44,18 +45,49 @@ just copy_files
 
 ## Usage
 
-There are 3 separate commands that you can use:
+There are 4 separate commands that you can use:
 
 - `aicmd`: Generate a shell command based on user input.
-> Example: aicmdtools "create a new directory called my_project"
+> Example: aicmd "create a new directory called my_project"
 
 - `aichat`: Start a chat with the AI model
 - `aicompgraph`: Generate plantuml diagrams based YAML files (useful for Crossplane diagrams)
+- `aifix`: Analyze command errors and suggest fixes instantly
+> Example: After a failed command, run `aifix` or `aifix "your error message"`
+
+### aifix - Error Analysis and Fix Suggestions
+
+The `aifix` command provides instant error explanation and fix suggestions:
+
+```bash
+# Automatic error detection (after a failed command)
+$ go build
+# error: undefined: fmt.Println
+$ aifix
+
+# Manual error input
+$ aifix "Module not found: 'react-dom'"
+
+# Show help
+$ aifix -help
+
+# Optional shell integration for better auto-detection
+$ aifix -init-shell zsh
+```
+
+Features:
+- Analyzes errors from shell history automatically
+- Provides clear explanations and exact fix commands
+- Supports bash, zsh, and fish shells
+- Filters noise from verbose error messages
+- Context-aware suggestions based on OS, shell, and language
+- Safety warnings for potentially destructive commands
 
 ## Commands
 
-- `-model`: Display the current model being used (supported by `aicmd`)
+- `-model`: Display the current model being used (supported by `aicmd` and `aifix`)
 - `-version`: Display the current version (supported by all CLIs)
+- `-help`: Display help information (supported by `aifix`)
 
 ## Configuration
 
